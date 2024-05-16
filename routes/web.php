@@ -13,10 +13,10 @@ use App\Http\Controllers\UserController;
 |
 */
 
-Route::get('/', [UserController::class, 'index']);
-Route::post('/add', [UserController::class, 'add']);
-Route::post('/edit', [UserController::class, 'edit']);
-Route::post('/delete', [UserController::class, 'delete']);
-Route::post('/view', [UserController::class, 'view']);
-Route::post('/sort', [UserController::class, 'sort']);
-Route::get('/fetch', [UserController::class, 'fetchData']);
+Route::get('/', [UserController::class, 'index'])->name('user.index');
+Route::post('/add', [UserController::class, 'add'])->name('user.add');
+Route::post('/edit', [UserController::class, 'edit'])->name('user.edit');
+Route::post('/delete', [UserController::class, 'delete'])->name('user.delete');
+Route::post('/view', [UserController::class, 'view'])->name('user.view');
+Route::post('/sort', [UserController::class, 'sort'])->name('user.sort');
+Route::get('/fetch', [UserController::class, 'fetchData'])->name('user.fetch');
