@@ -48,7 +48,7 @@ class UserController extends Controller
             "gender" => $request->input("gender"),
         ];
         Session::put("data", $data);
-        Session::put('id', $newId);
+        Session::put('id', $newId); 
 
         return response()->json(["success" => "Data added successfully!"]);
     }

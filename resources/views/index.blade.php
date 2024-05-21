@@ -258,10 +258,7 @@
          }
          
          function handleErrors(errors) {
-             if (errors.id) {
-                 $('#id').addClass('is-invalid');
-                 $('#idError').text(errors.id[0]);
-             }
+             
              if (errors.name) {
                  $('#name').addClass('is-invalid');
                  $('#nameError').text(errors.name[0]);
