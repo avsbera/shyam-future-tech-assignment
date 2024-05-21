@@ -9,13 +9,15 @@ class UserController extends Controller
 {
     public function index()
     {
+        $data = Session::get("userdata", []);
+        //dd($data);
         return view("index");
     }
 
     // Fetch data stored in session and return as JSON response
     public function fetchData()
     {
-        $data = Session::get("data", []);
+        $data = Session::get("userdata", []);
         //dd($data);
 
         return response()->json(["data" => $data]);
@@ -39,7 +41,7 @@ class UserController extends Controller
         $currentId = (int) Session::get('id', 0);
         $newId = $currentId + 1;
 
-        $data = Session::get("data", []);
+        $data = Session::get("userdata", []);
         $data[] = [
             "id" => $newId,
             "name" => $request->input("name"),
@@ -47,7 +49,7 @@ class UserController extends Controller
             "address" => $request->input("address"),
             "gender" => $request->input("gender"),
         ];
-        Session::put("data", $data);
+        Session::put("userdata", $data);
         Session::put('id', $newId); 
 
         return response()->json(["success" => "Data added successfully!"]);
@@ -64,7 +66,7 @@ class UserController extends Controller
             "gender" => "required",
         ]);
 
-        $data = Session::get("data", []);
+        $data = Session::get("userdata", []);
         foreach ($data as &$entry) {
             if ($entry["id"] == $request->input("id")) {
                 $entry["name"] = $request->input("name");
@@ -80,7 +82,7 @@ class UserController extends Controller
                 break;
             }
         }
-        Session::put("data", $data);
+        Session::put("userdata", $data);
 
         return response()->json(["success" => "Data edited successfully!"]);
     }
@@ -88,7 +90,7 @@ class UserController extends Controller
     // Delete user data from session
     public function delete(Request $request)
     {
-        $data = Session::get("data", []);
+        $data = Session::get("userdata", []);
         $idToDelete = $request->input('id');
 
         $filteredData = array_filter($data, function ($entry) use ($idToDelete) {
@@ -97,7 +99,7 @@ class UserController extends Controller
 
         $filteredData = array_values($filteredData);
 
-        Session::put("data", $filteredData);
+        Session::put("userdata", $filteredData);
 
         return response()->json(["success" => "Data deleted successfully!"]);
     }
@@ -106,7 +108,7 @@ class UserController extends Controller
     // View user data from session based on provided ID
     public function view(Request $request)
     {
-        $data = Session::get("data", []);
+        $data = Session::get("userdata", []);
         $entry = array_values(
             array_filter($data, function ($entry) use ($request) {
                 return $entry["id"] == $request->input("id");
@@ -124,7 +126,7 @@ class UserController extends Controller
     // Sort user data stored in session based on provided criteria
     public function sort(Request $request)
     {
-        $data = Session::get("data", []);
+        $data = Session::get("userdata", []);
         $sort_by = $request->input("sort_by");
 
         // Check if sort order is stored in session, initialize it if not
@@ -139,7 +141,7 @@ class UserController extends Controller
 
         // Update session with new sort order
         Session::put("sort_order", $sort_order);
-        Session::put("data", $sorted_data);
+        Session::put("userdata", $sorted_data);
 
         return response()->json([
             "data" => $sorted_data,
