@@ -25,7 +25,6 @@ class UserController extends Controller
     public function add(Request $request)
     {
         $this->validate($request, [
-            "id" => "required",
             "name" => "required",
             "image" => "required|image",
             "address" => "required",
@@ -36,15 +35,20 @@ class UserController extends Controller
 
         $imagePath = str_replace("public/", "", $imagePath);
 
+        // Get the current ID from session, or set it to 0 if not found
+        $currentId = (int) Session::get('id', 0);
+        $newId = $currentId + 1;
+
         $data = Session::get("data", []);
         $data[] = [
-            "id" => $request->input("id"),
+            "id" => $newId,
             "name" => $request->input("name"),
             "image" => $imagePath,
             "address" => $request->input("address"),
             "gender" => $request->input("gender"),
         ];
         Session::put("data", $data);
+        Session::put('id', $newId);
 
         return response()->json(["success" => "Data added successfully!"]);
     }
@@ -85,14 +89,19 @@ class UserController extends Controller
     public function delete(Request $request)
     {
         $data = Session::get("data", []);
-        //dd($request->input('id'));
-        $data = array_filter($data, function ($entry) use ($request) {
-            return $entry["id"] != $request->input("id");
+        $idToDelete = $request->input('id');
+
+        $filteredData = array_filter($data, function ($entry) use ($idToDelete) {
+            return $entry['id'] != $idToDelete;
         });
-        Session::put("data", $data);
+
+        $filteredData = array_values($filteredData);
+
+        Session::put("data", $filteredData);
 
         return response()->json(["success" => "Data deleted successfully!"]);
     }
+
 
     // View user data from session based on provided ID
     public function view(Request $request)

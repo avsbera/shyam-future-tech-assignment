@@ -15,7 +15,6 @@
                <div id="successMessage" class="mt-3 alert alert-success d-none"></div>
                <form id="addForm" method="POST" enctype="multipart/form-data">
                   @csrf
-                  <input type="hidden" id="id" name="id">
                   <div class="row mb-3">
                      <label for="name" class="col-sm-2 col-form-label">Name</label>
                      <div class="col-sm-4">
@@ -145,10 +144,6 @@
          
              $('#addForm').on('submit', function (e) {
                  e.preventDefault();
-                 // Generate auto-incremented ID
-                 let id = $('#dataList tbody tr').length + 1;
-                 $('#id').val(id);
-         
                  
                  let formData = new FormData(this);
                  $.ajax({
@@ -201,7 +196,7 @@
          
          response.data.forEach(entry => {
          var tableRow = `
-         <tr>
+         <tr id="entry-${entry.id}">
          <td>${entry.id}</td>
          <td>${entry.name}</td>
          <td><img width="150px" height="150px" src="{{ url('storage/')}}/${entry.image}" alt="${entry.name}" class="img-fluid"></td>
@@ -236,7 +231,7 @@
          
          response.data.forEach(entry => {
          var tableRow = `
-         <tr>
+         <tr id="entry-${entry.id}">
          <td>${entry.id}</td>
          <td>${entry.name}</td>
          <td><img width="150px" height="150px" src="{{ url('storage/')}}/${entry.image}" alt="${entry.name}" class="img-fluid"></td>
@@ -302,18 +297,19 @@
          }
          
          function deleteEntry(id) {
-             $.ajax({
-                 url: '/delete',
-                 method: 'POST',
-                 data: { id: id },
-                 success: function (response) {
-                     $(`#entry-${id}`).remove();
-             fetchData();
-         
-                     $('#successMessage').text(response.success).removeClass('d-none');
-                 }
-             });
-         }
+            $.ajax({
+                url: '/delete',
+                method: 'POST',
+                data: { id: id },
+                success: function (response) {
+                    $(`#entry-${id}`).remove();
+                    fetchData();
+
+                    $('#successMessage').text(response.success).removeClass('d-none');
+                }
+            });
+        }
+
          
          function viewEntry(id) {
          $.ajax({
